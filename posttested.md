@@ -101,4 +101,41 @@ rails generate model User email:string password:string
 But we don't have users authentication implemented, so...
 we make a dummy user:
 
+# Feature step 1:test user sign-in
+
+~~~~
+@@@ruby
+Given /^current user is signed in$/ do  
+	@user = User.new 
+end
+~~~~
+
+# Feature step 2:test creatation page
+
+~~~~
+@@@ruby
+Given /^is on the post creation page$/ do
+    visit new_post_path 
+end
+~~~~
+
+# Feature step 3:test to publish post
+
+~~~~
+@@@ruby
+When /^the user publishes a post$/ do
+    @post = Post.create(title: "TODO", author: "user@example.com", date_published: "12/15/12", content:"making a test")
+    click_button "Create Post"
+end
+~~~~
+
+# Feature step 4: test to see the new post
+
+~~~~
+@@@ruby
+Then /^the user is shown the new post$/ do
+	visit post_path(@post.id)
+	page.should have_content "user@example.com"   
+end
+~~~~
 
