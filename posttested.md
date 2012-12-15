@@ -201,3 +201,54 @@ Finished in 0.10627 seconds
 Randomized with seed 44580
 ~~~~
 
+# Rspec for Post model required fields
+
+~~~~
+@@@ruby
+require 'spec_helper'
+
+describe Post do 
+	
+	before(:each) do
+		@attr = {
+			 author: "Jo",
+			  title: "new post", 
+			content: "how to make a rspec",
+	 date_published: "12/15/12"
+		}
+	end
+
+	it "creates a new post" do
+		post = Post.create @attr
+		post.should be_valid
+	end
+	
+	it "fails without all required attr" do
+		post = Post.create(@attr, author: "")
+		post.should_not be_valid
+	end
+end
+~~~~
+
+# Rspec failed
+
+~~~~
+@@@ruby
+F.
+
+Failures:
+
+  1) Post fails without all required attr
+     Failure/Error: post.should_not be_valid
+       expected valid? to return false, got true
+     # ./spec/models/post_spec.rb:21:in `block (2 levels) in <top (required)>'
+
+Finished in 0.19603 seconds
+2 examples, 1 failure
+
+Failed examples:
+
+rspec ./spec/models/post_spec.rb:19 # Post fails without all required attr
+
+Randomized with seed 28016
+~~~~
