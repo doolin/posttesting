@@ -186,3 +186,18 @@ rspec ./spec/models/post_spec.rb:4 # Post creates a new post
 Randomized with seed 24862
 ~~~~
 
+# Fixed Rspec failure
+
+Changed `email:"user@example.com"` to `date_published: "12/15/12"` since email is not an attribute of the Post model. 
+
+~~~~
+@@@ruby
+pivotal-guest-203:posttested zmontesd$ rspec spec
+.
+
+Finished in 0.10627 seconds
+1 example, 0 failures
+
+Randomized with seed 44580
+~~~~
+
