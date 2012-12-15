@@ -161,4 +161,28 @@ describe Post do
 end
 ~~~~
 
+# Rspec fails
+
+~~~~
+@@@ruby
+pivotal-guest-203:posttested zmontesd$ rspec spec
+F
+
+Failures:
+
+  1) Post creates a new post
+     Failure/Error: post = Post.create attr
+     ActiveModel::MassAssignmentSecurity::Error:
+       Can't mass-assign protected attributes: email
+     # ./spec/models/post_spec.rb:11:in `block (2 levels) in <top (required)>'
+
+Finished in 0.02623 seconds
+1 example, 1 failure
+
+Failed examples:
+
+rspec ./spec/models/post_spec.rb:4 # Post creates a new post
+
+Randomized with seed 24862
+~~~~
 
