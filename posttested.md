@@ -139,3 +139,26 @@ Then /^the user is shown the new post$/ do
 end
 ~~~~
 
+# Rspec for Post Model
+
+`mkdir  -p spec/models`
+
+~~~~
+@@@ruby
+require 'spec_helper'
+
+describe Post do 
+	it "creates a new post" do
+		attr = {
+			 author: "Jo",
+			  title: "new post", 
+			content: "how to make a rspec",
+			  email: "user@example.com"
+		}
+		post = Post.create attr
+		post.should be_valid
+	end
+end
+~~~~
+
+
