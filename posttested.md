@@ -101,4 +101,200 @@ rails generate model User email:string password:string
 But we don't have users authentication implemented, so...
 we make a dummy user:
 
+# Feature step 1:test user sign-in
+
+~~~~
+@@@ruby
+Given /^current user is signed in$/ do  
+	@user = User.new 
+end
+~~~~
+
+# Feature step 2:test creatation page
+
+~~~~
+@@@ruby
+Given /^is on the post creation page$/ do
+    visit new_post_path 
+end
+~~~~
+
+# Feature step 3:test to publish post
+
+~~~~
+@@@ruby
+When /^the user publishes a post$/ do
+    @post = Post.create(title: "TODO", author: "user@example.com", date_published: "12/15/12", content:"making a test")
+    click_button "Create Post"
+end
+~~~~
+
+# Feature step 4: test to see the new post
+
+~~~~
+@@@ruby
+Then /^the user is shown the new post$/ do
+	visit post_path(@post.id)
+	page.should have_content "user@example.com"   
+end
+~~~~
+
+# Rspec for Post Model
+
+`mkdir  -p spec/models`
+
+~~~~
+@@@ruby
+require 'spec_helper'
+
+describe Post do 
+	it "creates a new post" do
+		attr = {
+			 author: "Jo",
+			  title: "new post", 
+			content: "how to make a rspec",
+			  email: "user@example.com"
+		}
+		post = Post.create attr
+		post.should be_valid
+	end
+end
+~~~~
+
+# Rspec fails
+
+~~~~
+@@@ruby
+pivotal-guest-203:posttested zmontesd$ rspec spec
+F
+
+Failures:
+
+  1) Post creates a new post
+     Failure/Error: post = Post.create attr
+     ActiveModel::MassAssignmentSecurity::Error:
+       Can't mass-assign protected attributes: email
+     # ./spec/models/post_spec.rb:11:in `block (2 levels) in <top (required)>'
+
+Finished in 0.02623 seconds
+1 example, 1 failure
+
+Failed examples:
+
+rspec ./spec/models/post_spec.rb:4 # Post creates a new post
+
+Randomized with seed 24862
+~~~~
+
+# Fixed Rspec failure
+
+Changed `email:"user@example.com"` to `date_published: "12/15/12"` since email is not an attribute of the Post model. 
+
+~~~~
+@@@ruby
+pivotal-guest-203:posttested zmontesd$ rspec spec
+.
+
+Finished in 0.10627 seconds
+1 example, 0 failures
+
+Randomized with seed 44580
+~~~~
+
+# Rspec for Post model required fields
+
+~~~~
+@@@ruby
+require 'spec_helper'
+
+describe Post do 
+	
+	before(:each) do
+		@attr = {
+			 author: "Jo",
+			  title: "new post", 
+			content: "how to make a rspec",
+	 date_published: "12/15/12"
+		}
+	end
+
+	it "creates a new post" do
+		post = Post.create @attr
+		post.should be_valid
+	end
+	
+	it "fails without all required attr" do
+		post = Post.create(@attr, author: "")
+		post.should_not be_valid
+	end
+end
+~~~~
+
+# Rspec failed
+
+~~~~
+@@@ruby
+F.
+
+Failures:
+
+  1) Post fails without all required attr
+     Failure/Error: post.should_not be_valid
+       expected valid? to return false, got true
+     # ./spec/models/post_spec.rb:21:in `block (2 levels) in <top (required)>'
+
+Finished in 0.19603 seconds
+2 examples, 1 failure
+
+Failed examples:
+
+rspec ./spec/models/post_spec.rb:19 # Post fails without all required attr
+
+Randomized with seed 28016
+~~~~
+
+# Fixed Rspec bug
+
+~~~~
+@@@ruby
+require 'spec_helper'
+
+describe Post do 
+	
+	before(:each) do
+		@attr = {
+			 author: "Jo",
+			  title: "new post", 
+			content: "how to make a rspec",
+	 date_published: "12/15/12"
+		}
+	end
+
+	it "creates a new post" do
+		post = Post.create @attr
+		post.should be_valid
+	end
+	
+	it "fails without all required attr" do
+		post = Post.create(
+			  title: "new post", 
+			content: "how to make a rspec",
+	 date_published: "12/15/12")
+		post.should_not be_valid
+	end
+end
+~~~~
+
+# Result
+
+~~~~
+@@@ruby
+..
+
+Finished in 0.1231 seconds
+2 examples, 0 failures
+
+Randomized with seed 52184
+~~~~
+
 
